@@ -74,16 +74,15 @@ See `ddistu` for a similar implementation of `dnorm` customized
 to the difference between unitary operations.
 
 """
-ddist(E::Matrix,F::Matrix) = dnormcptp(E,F)
-
+ddist(E::Matrix,F::Matrix; verbose = false) = dnormcptp(E,F; verbose = verbose)
 
 """
-ddistec(E,F, c)
+ddistec(E,F, ec, H)
 
 Energy constrained diamond norm distance between two linear CPTP superoperators.
 
 """
-ddistec(E::Matrix,F::Matrix, ec::Number) = dnormcptp(E,F, ec)
+ddistec(E::Matrix,F::Matrix, ec::Number, H::Matrix; verbose = false) = dnormcptp(E,F, ec, H; verbose = verbose)
 
 """
 dnormcptp_reimp(E,F)

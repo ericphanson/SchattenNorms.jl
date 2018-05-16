@@ -171,21 +171,21 @@ let # wat09b
     end
 end
 
-let # winter18
+let # winter17
     global dnormcptpec
     local prev_dy, F
 
     prev_dy = -1
 
     """
-    dnormcptpec(L1,L2, E) 
+    dnormcptpec(L1,L2, E, H) 
 
-    Computes the diamond norm distance between two linear completely
-    positive and trace preserving superoperators `L1` and `L2` . The
+    Computes the energy-constrained diamond norm distance between two linear completely
+    positive and trace preserving superoperators `L1` and `L2`, with respect to the Hamiltonian `H`, with an energy constraint of `E`. The
     superoperators must be represented in column major form.
 
     """
-    function dnormcptpec(L1,L2, E)
+    function dnormcptpec(L1,L2, E, H; verbose = false)
         J = involution(L1-L2)
 
         dx = size(J,1) |> sqrt |> x -> round(Int,x)
@@ -205,14 +205,16 @@ let # winter18
         pZr = reshape(F*vec(Zr), dx, dx)
         pZi = reshape(F*vec(Zi), dx, dx)
 
-        μ = Variable(1)
-        prob = minimize( μ ) 
-        
-        prob.constraints += isposdef(  μ*eye(2*dx) -  ϕ(pZr, pZi) ) # Z <= μ*identity
+        x = Variable()
+        y = Variable()
+        prob = minimize( x + y*E ) 
+        prob.constraints += (x >= 0)
+        prob.constraints += (y >= 0)
+        prob.constraints += isposdef( y*ϕ(real(H), imag(H)) + x*eye(2*dx) -  ϕ(pZr, pZi) ) # tr_A Z <= x*identity + y*H
         prob.constraints += isposdef( ϕ(Zr,Zi) ) # Z >= 0
         prob.constraints += isposdef( ϕ(Zr,Zi) - ϕ(Jr,Ji) ) # Z >= J
             
-        solve!(prob)
+        solve!(prob, Convex.SCS.SCSSolver(verbose=verbose))
 
         if prob.status != :Optimal
             #println("DNORM_CPTP warning.")
@@ -225,7 +227,7 @@ let # winter18
     end
 end
 
-let # winter18
+let
     global dnormcptp_reimp
     local prev_dy, F
 
@@ -262,7 +264,7 @@ let # winter18
         μ = Variable(1)
         prob = minimize( μ ) 
         
-        prob.constraints += isposdef(  μ*eye(2*dx) -  ϕ(pZr, pZi) ) # Z <= μ*identity
+        prob.constraints += isposdef(  μ*eye(2*dx) -  ϕ(pZr, pZi) ) # tr_A Z <= μ*identity
         prob.constraints += isposdef( ϕ(Zr,Zi) ) # Z >= 0
         prob.constraints += isposdef( ϕ(Zr,Zi) - ϕ(Jr,Ji) ) # Z >= J
             
@@ -294,7 +296,7 @@ let # wat09b
     superoperators must be represented in column major form.
 
     """
-    function dnormcptp(L1,L2)
+    function dnormcptp(L1,L2; verbose = false)
         J = involution(L1-L2)
 
         dx = size(J,1) |> sqrt |> x -> round(Int,x)
@@ -319,7 +321,7 @@ let # wat09b
         prob.constraints += isposdef( ϕ(Zr,Zi) )
         prob.constraints += isposdef( ϕ(Zr,Zi) - ϕ(Jr,Ji) )
             
-        solve!(prob)
+        solve!(prob, Convex.SCS.SCSSolver(verbose=verbose))
 
         if prob.status != :Optimal
             #println("DNORM_CPTP warning.")
