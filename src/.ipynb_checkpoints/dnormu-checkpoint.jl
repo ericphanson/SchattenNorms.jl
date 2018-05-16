@@ -82,7 +82,7 @@ ddistec(E,F, ec, H)
 Energy constrained diamond norm distance between two linear CPTP superoperators.
 
 """
-ddistec(E::Matrix,F::Matrix, ec::Number, H::Matrix; verbose = false) = dnormcptp(E,F, ec, H; verbose = verbose)
+ddistec(E::Matrix,F::Matrix, ec::Number, H::Matrix; verbose = false) = dnormcptpec(E,F, ec, H; verbose = verbose)
 
 """
 dnormcptp_reimp(E,F)
