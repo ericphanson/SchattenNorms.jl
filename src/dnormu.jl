@@ -62,7 +62,7 @@ function worstfidelity(u::Matrix, v::Matrix)
 end
 
 """
-ddist(U,V)
+ddist(E,F)
 
 Diamond norm distance between two linear CPTP superoperators.
   Equivalent to dnrom(E-F), but under the assumption that `E` and `F`
@@ -76,8 +76,17 @@ to the difference between unitary operations.
 """
 ddist(E::Matrix,F::Matrix) = dnormcptp(E,F)
 
+
 """
-ddist(U,V)
+ddistec(E,F, c)
+
+Energy constrained diamond norm distance between two linear CPTP superoperators.
+
+"""
+ddistec(E::Matrix,F::Matrix, ec::Number) = dnormcptp(E,F, ec)
+
+"""
+ddistu(U,V)
 
 Diamond norm distance between two unitary operations.
   Equivalent to `dnorm(liou(U)-liou(V))`, under the assumption `U` and

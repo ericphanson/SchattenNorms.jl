@@ -171,6 +171,113 @@ let # wat09b
     end
 end
 
+let # winter18
+    global dnormcptpec
+    local prev_dy, F
+
+    prev_dy = -1
+
+    """
+    dnormcptpec(L1,L2, E) 
+
+    Computes the diamond norm distance between two linear completely
+    positive and trace preserving superoperators `L1` and `L2` . The
+    superoperators must be represented in column major form.
+
+    """
+    function dnormcptpec(L1,L2, E)
+        J = involution(L1-L2)
+
+        dx = size(J,1) |> sqrt |> x -> round(Int,x)
+        dy = dx
+
+        if prev_dy != dy
+            F = E_(dy,dx)'
+            prev_dy = dy
+        end
+
+        Jr = real(J)
+        Ji = imag(J)
+
+        Zr = Variable(dy*dx, dy*dx)
+        Zi = Variable(dy*dx, dy*dx)
+
+        pZr = reshape(F*vec(Zr), dx, dx)
+        pZi = reshape(F*vec(Zi), dx, dx)
+
+        prob = minimize( μ ) )
+        
+        prob.constraints += isposdef(  μ*eye(ϕ(pZr, pZi)) -  ϕ(pZr, pZi) ) # Z <= μ*identity
+        prob.constraints += isposdef( ϕ(Zr,Zi) ) # Z >= 0
+        prob.constraints += isposdef( ϕ(Zr,Zi) - ϕ(Jr,Ji) ) # Z >= J
+            
+        solve!(prob)
+
+        if prob.status != :Optimal
+            #println("DNORM_CPTP warning.")
+            #println("Input: $(L)")
+            #println("Input's Choi spectrum: $(eigvals(liou2choi(L)))")
+            warn("Diamond norm calculation did not converge.")
+        end
+
+        return 2*prob.optval
+    end
+end
+
+let # winter18
+    global dnormcptp_reimp
+    local prev_dy, F
+
+    prev_dy = -1
+
+    """
+    dnormcptp_reimp(L1,L2) 
+
+    Computes the diamond norm distance between two linear completely
+    positive and trace preserving superoperators `L1` and `L2` . The
+    superoperators must be represented in column major form.
+
+    """
+    function dnormcptp_reimp(L1,L2)
+        J = involution(L1-L2)
+
+        dx = size(J,1) |> sqrt |> x -> round(Int,x)
+        dy = dx
+
+        if prev_dy != dy
+            F = E_(dy,dx)'
+            prev_dy = dy
+        end
+
+        Jr = real(J)
+        Ji = imag(J)
+
+        Zr = Variable(dy*dx, dy*dx)
+        Zi = Variable(dy*dx, dy*dx)
+
+        pZr = reshape(F*vec(Zr), dx, dx)
+        pZi = reshape(F*vec(Zi), dx, dx)
+
+        prob = minimize( μ ) )
+        
+        prob.constraints += isposdef(  μ*eye(ϕ(pZr, pZi)) -  ϕ(pZr, pZi) ) # Z <= μ*identity
+        prob.constraints += isposdef( ϕ(Zr,Zi) ) # Z >= 0
+        prob.constraints += isposdef( ϕ(Zr,Zi) - ϕ(Jr,Ji) ) # Z >= J
+            
+        solve!(prob)
+
+        if prob.status != :Optimal
+            #println("DNORM_CPTP warning.")
+            #println("Input: $(L)")
+            #println("Input's Choi spectrum: $(eigvals(liou2choi(L)))")
+            warn("Diamond norm calculation did not converge.")
+        end
+
+        return 2*prob.optval
+    end
+end
+
+
 let # wat09b
     global dnormcptp
     local prev_dy, F
