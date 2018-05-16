@@ -205,7 +205,7 @@ let # winter18
         pZr = reshape(F*vec(Zr), dx, dx)
         pZi = reshape(F*vec(Zi), dx, dx)
 
-        prob = minimize( μ ) )
+        prob = minimize( μ ) 
         
         prob.constraints += isposdef(  μ*eye(ϕ(pZr, pZi)) -  ϕ(pZr, pZi) ) # Z <= μ*identity
         prob.constraints += isposdef( ϕ(Zr,Zi) ) # Z >= 0
@@ -258,7 +258,7 @@ let # winter18
         pZr = reshape(F*vec(Zr), dx, dx)
         pZi = reshape(F*vec(Zi), dx, dx)
 
-        prob = minimize( μ ) )
+        prob = minimize( μ ) 
         
         prob.constraints += isposdef(  μ*eye(ϕ(pZr, pZi)) -  ϕ(pZr, pZi) ) # Z <= μ*identity
         prob.constraints += isposdef( ϕ(Zr,Zi) ) # Z >= 0
