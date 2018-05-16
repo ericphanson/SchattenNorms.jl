@@ -86,15 +86,6 @@ Energy constrained diamond norm distance between two linear CPTP superoperators.
 ddistec(E::Matrix,F::Matrix, ec::Number) = dnormcptp(E,F, ec)
 
 """
-dnormcptp_reimp(E,F)
-
-Test reimplementation of ddist.
-
-"""
-ddist_reimp(E::Matrix,F::Matrix) = dnormcptp_reimp(E,F)
-
-
-"""
 ddistu(U,V)
 
 Diamond norm distance between two unitary operations.
